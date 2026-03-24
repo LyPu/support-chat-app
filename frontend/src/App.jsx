@@ -7,21 +7,28 @@ export default function App() {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    const newMessages = [...messages, { role: "user", text: input }];
-    setMessages(newMessages);
+    const userMessage = input;
+
+    // Add user message to UI
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: userMessage },
+    ]);
+
     setInput("");
 
     try {
-      const res = await fetch("http://localhost:3001/chat", {
+      const res = await fetch("http://localhost:8080/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ message: userMessage }),
       });
 
       const data = await res.json();
 
+      // Add bot response
       setMessages((prev) => [
         ...prev,
         { role: "bot", text: data.reply },
@@ -48,8 +55,15 @@ export default function App() {
         }}
       >
         {messages.map((m, i) => (
-          <div key={i} style={{ textAlign: m.role === "user" ? "right" : "left" }}>
-            <p><b>{m.role}:</b> {m.text}</p>
+          <div
+            key={i}
+            style={{
+              textAlign: m.role === "user" ? "right" : "left",
+            }}
+          >
+            <p>
+              <b>{m.role}:</b> {m.text}
+            </p>
           </div>
         ))}
       </div>
@@ -57,9 +71,13 @@ export default function App() {
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") sendMessage();
+        }}
         placeholder="Type message"
         style={{ marginRight: 10 }}
       />
+
       <button onClick={sendMessage}>Send</button>
     </div>
   );

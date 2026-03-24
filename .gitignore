@@ -1,3 +1,15 @@
 node_modules/
-.env
 dist/
+
+build/
+.gradle/
+*.log
+
+.DS_Store
+Thumbs.db
+
+.env
+
+.vscode/
+
+*.zip

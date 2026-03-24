@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: support-app
+
+server:
+  port: 8080
+
+openai:
+  api-key: ${OPENAI_API_KEY:}
